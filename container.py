@@ -20,7 +20,7 @@ def up(args):
         parallel_scp(hosts, src, dst, stdout=stdout, stderr=stderr)
     # bring up docker container and install requirements by launching the install script
     cmd = f"""
-        {args.inline} -t 0 {config['docker_start']}
+        {args.inline} -t 0 {config['docker_start']} && sudo chmod +x {dst}
     """
     run_parallel_command(hosts, 'parallel-ssh', cmd, stdout=stdout, stderr=stderr)
     cmd = f"""
@@ -43,7 +43,7 @@ def exec(args):
         parallel_scp(hosts, src, dst, stdout=stdout, stderr=stderr)
     # execute on docker container
     cmd = f"""
-        {args.inline} -t 0 sudo docker exec {USER}_spawn {dst}
+        {args.inline} -t 0 sudo chmod +x {dst} && sudo docker exec {USER}_spawn {dst}
     """
     run_parallel_command(hosts, 'parallel-ssh', cmd, stdout=stdout, stderr=stderr)
     return 0

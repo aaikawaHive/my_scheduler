@@ -11,7 +11,7 @@ rsync_flags : "--archive --compress --verbose"
 
 # docker container specifications
 install_script : scripts/install.sh # project specific script
-exec_script : scripts/exec.sh # project specific script
+exec_script : scripts/run.sh # project specific script
 
 # data src format
 src_data_format : coco # { coco, detectron2, yolo }

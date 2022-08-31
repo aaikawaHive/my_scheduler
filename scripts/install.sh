@@ -5,4 +5,4 @@ cd /home/{{ user }}/DINO
 pip install -r requirements.txt
 cd models/dino/ops
 python setup.py build install
-python test.py
+# python test.py
