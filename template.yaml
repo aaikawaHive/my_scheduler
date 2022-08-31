@@ -1,0 +1,4 @@
+# these values are templated using the values in `config.yaml`. You should not need to touch this
+data_path : /persist/{{ user }}/{{ data }}/
+project_path : /persist/{{ user }}/{{ project }}/
+docker_start : "sudo nvidia-docker run --privileged -dit --name {{ user }}_spawn --network=host --ipc=host -w /home/{{ user }} -v /root/.ssh:/root/.ssh -v /home/{{ user }}:/home/{{ user }} -v /home/rweber:/home/rweber nvcr.io/nvidia/pytorch:21.06-py3"

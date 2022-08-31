@@ -1,0 +1,22 @@
+# define your variables. Filepaths are relative to /persist/${user}/ directory
+user :  aaikawa
+project :  DINO
+data :  logo_coco
+gpus : 80 # allowed values {10, 40, 80}
+min_disk : 50 # in GB
+num_nodes : 1
+
+# parallel-rsync parameters for `sync.py`
+rsync_flags : "--archive --compress --verbose"
+
+# docker container specifications
+install_script : scripts/install.sh # project specific script
+exec_script : scripts/exec.sh # project specific script
+
+# data src format
+src_data_format : coco # { coco, detectron2, yolo }
+src_box_format : xyxy # { xyxy, xywh, xcycwh, xyxyn, xywhn, xcycwhn }
+
+# data dst format
+src_data_format : coco # { coco, detectron2, yolo }
+src_box_format : xyxy # { xyxy, xywh, xcycwh, xyxyn, xywhn, xcycwhn }
