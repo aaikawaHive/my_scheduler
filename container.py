@@ -2,7 +2,7 @@ import argparse
 import os
 import sys
 import tempfile
-from utils import config, hosts, run_parallel_command, setup_logging, parallel_scp, fill_template
+from utils import config, hosts, run_parallel_command, run_enum_command, setup_logging, parallel_scp, fill_template
 
 logdir = 'container'
 
@@ -45,7 +45,12 @@ def exec(args):
     cmd = f"""
         {args.inline} -t 0 sudo chmod +x {dst} && sudo docker exec {USER}_spawn {dst}
     """
-    run_parallel_command(hosts, 'parallel-ssh', cmd, stdout=stdout, stderr=stderr)
+    if args.enum: 
+        cmd += " {} "
+        run = run_enum_command
+    else:
+        run = run_parallel_command
+    run(hosts, 'parallel-ssh', cmd, stdout=stdout, stderr=stderr)
     return 0
 
 def down(args):
@@ -82,6 +87,8 @@ def main(argv=None):
         'exec',
         help=r'runs execute script in the docker container `${user}_spawn`',
     )
+    parser_exec.add_argument('--enum', action='store_true',
+                             help='run with formatted index included')
     parser_exec.set_defaults(func=exec)
     parser_down = subparsers.add_parser(
         'down',
