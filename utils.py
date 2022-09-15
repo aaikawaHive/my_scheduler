@@ -85,13 +85,24 @@ def run_enum_command(hosts, cmd, stdout=None, stderr=None):
 
     "python -m torch.distributed.launch --nproc_per_node 8 --node_number {} <YOUR_SCRIPT.py>"
     """
+    commands = []
     for i, host in enumerate(hosts):
         cmd_i = cmd.format(i)
-        cmd_i = cmd_i.split()
-        try:
-            print('{}::{}'.format(subprocess.check_output(['ssh', host] + cmd_i).decode('utf-8').strip(), cmd_i))
-        except subprocess.CalledProcessError as e:
-            print('{}::{}'.format(e.output.decode('utf-8').strip(), cmd_i))
+        if stdout:
+            cmd_i = cmd_i + f' > >(tee -a {os.path.join(stdout, host)}.exec) '
+        if stderr: 
+            cmd_i = cmd_i + f' 2> >(tee -a {os.path.join(stderr, host)}.exec >&2)'
+        cmd_i = f' ssh -tt {host} ' + cmd_i
+        commands.append(cmd_i)
+    commands = commands[::-1]
+    commands = " &\n".join(commands)
+    with open('exec.sh', 'w') as f:
+        f.write(commands)
+    exit(1)
+    try:
+        print('{}::{}'.format(subprocess.check_output(commands, shell=True).decode('utf-8').strip(), commands))
+    except subprocess.CalledProcessError as e:
+        print('{}::{}'.format(e.output.decode('utf-8').strip(), commands))
 
 def run_parallel_command(hosts, pcmd, cmd, block=True, stdout=None, stderr=None):
     """

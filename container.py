@@ -4,7 +4,7 @@ import sys
 import tempfile
 from utils import config, hosts, run_parallel_command, run_enum_command, setup_logging, parallel_scp, fill_template
 
-logdir = 'container'
+logdir = 'container/'
 
 def up(args):
     # copy install script to home directory
@@ -42,22 +42,31 @@ def exec(args):
         src = f.name
         parallel_scp(hosts, src, dst, stdout=stdout, stderr=stderr)
     # execute on docker container
-    cmd = f"""
-        {args.inline} -t 0 sudo chmod +x {dst} && sudo docker exec {USER}_spawn {dst}
-    """
+    
     if args.enum: 
-        cmd += " {} "
-        run = run_enum_command
+        cmd = f"""sudo chmod +x {dst} && sudo docker exec {USER}_spawn {dst}""" + " {} "
+        cmd = f""" "{cmd}" """
+        run_enum_command(hosts, cmd, stdout=stdout, stderr=stderr)
     else:
-        run = run_parallel_command
-    run(hosts, 'parallel-ssh', cmd, stdout=stdout, stderr=stderr)
+        cmd = f"""
+        {args.inline} -t 0 sudo chmod +x {dst} && sudo docker exec {USER}_spawn {dst}
+        """
+        run_parallel_command(hosts, 'parallel-ssh', cmd, stdout=stdout, stderr=stderr)
     return 0
 
 def down(args):
     stdout, stderr = args.stdout, args.stderr
-    USER = config['user']
+    USER, src = config['user'], config['clean_script']
+    clean_basename = os.path.basename(src)
+    clean_cmd = fill_template(src, config)
+    dst = f"/home/{USER}/{clean_basename}"
+    with tempfile.NamedTemporaryFile('w') as f:
+        f.write(exec_cmd)
+        f.flush()
+        src = f.name
+        parallel_scp(hosts, src, dst, stdout=stdout, stderr=stderr)
     cmd = f"""
-        {args.inline} sudo docker stop {USER}_spawn && sudo docker rm {USER}_spawn
+        {args.inline} {dst} && sudo docker stop {USER}_spawn && sudo docker rm {USER}_spawn
     """
     run_parallel_command(hosts, 'parallel-ssh', cmd, stdout=stdout, stderr=stderr)
     return 0
