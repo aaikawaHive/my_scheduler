@@ -1,4 +1,5 @@
 # these values are templated using the values in `config.yaml`. You should not need to touch this
 data_path : /persist/{{ user }}/{{ data }}/
 project_path : /persist/{{ user }}/{{ project }}/
-docker_start : "sudo nvidia-docker run --privileged -dit --name {{ user }}_spawn --network=host --ipc=host -w /home/{{ user }} -v /root/.ssh:/root/.ssh -v /home/{{ user }}:/home/{{ user }} -v /home/rweber:/home/rweber nvcr.io/nvidia/pytorch:21.06-py3"
+# docker_start : "sudo nvidia-docker run --privileged -dit --name {{ user }}_spawn --network=host --ipc=host -w /home/{{ user }} -v /persist/{{ user }}:/persist/{{ user }} -v /root/.ssh:/root/.ssh -v /home/{{ user }}:/home/{{ user }} -v /home/rweber:/home/rweber nvcr.io/nvidia/pytorch:21.06-py3"
+docker_start : "sudo docker run --privileged --name {{ user }}_spawn  -dit --net=host --ipc=host -v /persist/{{ user }}/.aws:/root/.aws -v /root/.ssh:/root/.ssh -v /persist/{{ user }}:/persist/{{ user }} -v /home/{{ user }}:/home/{{ user }} nvcr.io/nvidia/tritonserver:22.07-py3-sdk"

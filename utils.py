@@ -81,13 +81,14 @@ def load_config():
 def run_enum_command(hosts, cmd, stdout=None, stderr=None):
     """
     Runs command across hosts. Expects cmd to be a formatted string with a single argument
-    to be an unsigned integer assigned to each host i.e. `cmd` is:
+    to be an unsigned integer assigned to each host i.e. `cmd` is e.g.:
 
     "python -m torch.distributed.launch --nproc_per_node 8 --node_number {} <YOUR_SCRIPT.py>"
     """
     commands = []
+    n = len(hosts)
     for i, host in enumerate(hosts):
-        cmd_i = cmd.format(i)
+        cmd_i = cmd.format(i, n)
         if stdout:
             cmd_i = cmd_i + f' > >(tee -a {os.path.join(stdout, host)}.exec) '
         if stderr: 

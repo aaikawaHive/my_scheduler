@@ -44,7 +44,7 @@ def exec(args):
     # execute on docker container
     
     if args.enum: 
-        cmd = f"""sudo chmod +x {dst} && sudo docker exec {USER}_spawn {dst}""" + " {} "
+        cmd = f"""sudo chmod +x {dst} && sudo docker exec {USER}_spawn {dst}""" + " {} {} "
         cmd = f""" "{cmd}" """
         run_enum_command(hosts, cmd, stdout=stdout, stderr=stderr)
     else:
@@ -61,7 +61,7 @@ def down(args):
     clean_cmd = fill_template(src, config)
     dst = f"/home/{USER}/{clean_basename}"
     with tempfile.NamedTemporaryFile('w') as f:
-        f.write(exec_cmd)
+        f.write(clean_cmd)
         f.flush()
         src = f.name
         parallel_scp(hosts, src, dst, stdout=stdout, stderr=stderr)

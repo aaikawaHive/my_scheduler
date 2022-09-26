@@ -1,7 +1,8 @@
 #!/bin/bash
-#cd /home/{{ user }}/
-#pip install torch==1.9.1+cu111 torchvision==0.10.1+cu111 -f https://download.pytorch.org/whl/torch_stable.html
-#apt update
-#apt install -y zip htop screen libgl1-mesa-glx
-pip install -e detectron2
-# python test.py
+cd /home/{{ user }}/
+scp trn14:/persist/aaikawa/triton_client/video_client.py ./
+scp trn14:/persist/aaikawa/copy.csv ./
+apt update
+apt install -y ffmpeg aria2
+mkdir -p preds
+touch done.txt

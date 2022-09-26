@@ -2,9 +2,9 @@
 user :  aaikawa
 project :  detectron2
 data :  logo_objects_sports_location
-gpus : 80 # allowed values {10, 40, 80}
-min_disk : 50 # in GB
-num_nodes : 6
+gpus : 40 # allowed values {10, 40, 80}
+min_disk : 100 # in GB
+num_nodes : 8
 main_ip : 172.25.48.132
 
 # parallel-rsync parameters for `sync.py`

@@ -45,7 +45,7 @@ def disk_available(min_disk, file):
         free = float(free[:-1]) * 1e3
     else:
         print("invalid units for memory")
-        exit(1)
+        return False
     return free > min_disk
 
 def host_search(args):
